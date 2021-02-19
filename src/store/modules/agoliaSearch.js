@@ -1,4 +1,5 @@
 import algoliasearch from 'algoliasearch';
+import moment from 'moment';
 import { RESULTS_PER_PAGE } from '../../assets/js/constants';
 
 const algolia = algoliasearch('OFCNCOG2CU', 'f54e21fa3a2a0160595bb058179bfb1e', { protocol: 'https:' });
@@ -10,8 +11,12 @@ const state = {
 };
 
 const getters = {
-  getSearchResul: state => state.searchResult,
   getSearchRunning: state => state.isSearchRunning,
+  getFilteredSearchResult: state => state.searchResult.map(cur => ({
+    ...cur,
+    created: moment(cur.created).format('DD MMM YYYY'),
+    modified: moment(cur.modified).format('DD MMM YYYY'),
+  })),
 };
 
 const mutations = {
