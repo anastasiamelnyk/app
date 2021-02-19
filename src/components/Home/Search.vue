@@ -1,6 +1,5 @@
 <template>
   <v-row class="search">
-    
   </v-row>
 </template>
 
