@@ -1,7 +1,7 @@
 <template>
-  <div class="search">
+  <v-row class="search">
     
-  </div>
+  </v-row>
 </template>
 
 <script>

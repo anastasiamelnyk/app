@@ -1,9 +1,9 @@
 <template>
-  <div class="home">
+  <v-container class="home">
     <Search />
     <Table />
     <router-view></router-view>
-  </div>
+  </v-container>
 </template>
 
 <script>
