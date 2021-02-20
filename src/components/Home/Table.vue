@@ -26,7 +26,7 @@
             />
             <span
               class="my-1 package-list__author"
-              @click="addFacetFilter('owner.name', item.owner.name)"
+              @click.stop="addFacetFilter('owner.name', item.owner.name)"
             >
               {{ item.owner.name }}
             </span>
@@ -44,7 +44,7 @@
                 small
                 color="accent"
                 class="mr-1 mb-1"
-                @click="addFacetFilter('keywords', keyword)"
+                @click.stop="addFacetFilter('keywords', keyword)"
               >
                 {{ keyword }}
               </v-chip>
