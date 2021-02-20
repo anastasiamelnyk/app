@@ -5,7 +5,9 @@
         :headers="headers"
         :items="tableData"
         :items-per-page="itemsPerPage"
+        :page.sync="page"
         :loading="isSearchRunning"
+        no-data-text="No packages found"
         hide-default-footer
         class="elevation-1 package-list__table"
       >
@@ -45,30 +47,56 @@
           </div>
         </template>
       </v-data-table>
+      <v-pagination
+        v-if="totalPages"
+        v-model="currentPage"
+        :length="totalPages"
+        :total-visible="6"
+        class="package-list__pagination mt-2"
+        @input="search('form')"
+        @next="search('form')"
+        @previous="search('form')"
+      />
     </v-col>
   </v-row>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
-import { RESULTS_PER_PAGE } from '../../assets/js/constants';
-import tableHeades from '../../assets/js/tableHeaders';
+import { mapGetters, mapMutations, mapActions } from 'vuex';
+import tableHeaders from '../../assets/js/tableHeaders';
 
 export default {
   name: 'Table',
   props: {},
   components: {},
   data: () => ({
-    itemsPerPage: RESULTS_PER_PAGE,
-    headers: tableHeades.packagesTable,
+    headers: tableHeaders.packagesTable,
   }),
   computed: {
     ...mapGetters({
       tableData: 'getFilteredSearchResult',
       isSearchRunning: 'getSearchRunning',
+      page: 'getPage',
+      totalPages: 'getTotalPages',
+      itemsPerPage: 'getPerPage',
     }),
+    currentPage: {
+      get() {
+        return Number(this.page) + 1;
+      },
+      set(value) {
+        this.setPage(Number(value) - 1);
+      }
+    },
   },
-  methods: {},
+  methods: {
+    ...mapMutations([
+      'setPage',
+    ]),
+    ...mapActions([
+      'search',
+    ]),
+  },
 };
 </script>
 
@@ -109,6 +137,12 @@ export default {
   &__keywords {
     display: flex;
     flex-wrap: wrap;
+  }
+
+  &__pagination {
+    .v-pagination {
+      justify-content: flex-end;
+    }
   }
 
   @media (max-width: 599px) {

@@ -8,6 +8,10 @@ const index = algolia.initIndex('npm-search');
 const state = {
   searchResult: [],
   isSearchRunning: false,
+  page: 0,
+  totalPages: 0,
+  perPage: 0,
+  didSearchHappen: false,
 };
 
 const getters = {
@@ -17,6 +21,10 @@ const getters = {
     created: moment(cur.created).format('DD MMM YYYY'),
     modified: moment(cur.modified).format('DD MMM YYYY'),
   })),
+  getPage: state => state.page,
+  getTotalPages: state => state.totalPages,
+  getPerPage: state => state.perPage,
+  getSearchHappen: state => state.didSearchHappen,
 };
 
 const mutations = {
@@ -26,17 +34,33 @@ const mutations = {
   setSearchResult(state, payload) {
     state.searchResult = payload;
   },
+  setPage(state, payload) {
+    state.page = payload;
+  },
+  setTotalPages(state, payload) {
+    state.totalPages = payload;
+  },
+  setPerPage(state, payload) {
+    state.perPage = payload;
+  },
+  setSearchHappen(state, payload) {
+    state.didSearchHappen = payload;
+  },
 };
 
 const actions = {
-  search({ commit }, payload) {
+  search({ state, commit }, payload) {
+    if (!state.didSearchHappen) commit('setSearchHappen', true);
     commit('setSearchRunning', true);
 
-    index.search(payload.query, {
-      page: payload.page || 0,
+    index.search(payload, {
+      page: state.page,
       hitsPerPage: RESULTS_PER_PAGE,
-    }).then(({ hits }) => {
-      commit('setSearchResult', hits);
+    }).then(data => {
+      commit('setSearchResult', data.hits);
+      commit('setPage', data.page);
+      commit('setTotalPages', data.nbPages);
+      commit('setPerPage', data.hitsPerPage);
     })
     .finally(() => {
       commit('setSearchRunning', false);
