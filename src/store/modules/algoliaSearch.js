@@ -14,6 +14,8 @@ const state = {
   didSearchHappen: false,
   searchQuery: '',
   facetFilters: [],
+  selectedPkgAlgolia: {},
+  isLoadingPkg: false,
 };
 
 const getters = {
@@ -29,6 +31,8 @@ const getters = {
   getSearchHappen: state => state.didSearchHappen,
   getSearchQuery: state => state.searchQuery,
   getFacetFilters: state => state.facetFilters,
+  getSelectedPkgAlgolia: state => state.selectedPkgAlgolia,
+  getLoadingPkg: state => state.isLoadingPkg,
 };
 
 const mutations = {
@@ -59,6 +63,12 @@ const mutations = {
   addFacetFilters(state, payload) {
     state.facetFilters = [ ...state.facetFilters, payload ];
   },
+  setSelectedPkg(state, payload) {
+    state.selectedPkgAlgolia = payload;
+  },
+  setLoadingPkg(state, payload) {
+    state.isLoadingPkg = payload;
+  },
 };
 
 const actions = {
@@ -79,6 +89,17 @@ const actions = {
     .finally(() => {
       commit('setSearchRunning', false);
     });
+  },
+  getPackage({ commit }, payload) {
+    commit('setLoadingPkg', true);
+
+    index.getObject(payload)
+      .then(result => {
+        commit('setSelectedPkg', result);
+      })
+      .finally(() => {
+        commit('setLoadingPkg', false);
+      });
   },
   clearSearchQuery({ state, commit }) {
     if (state.searchQuery) commit('setSearchQuery', '');

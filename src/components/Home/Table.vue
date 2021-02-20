@@ -10,6 +10,7 @@
         no-data-text="No packages found"
         hide-default-footer
         class="elevation-1 package-list__table"
+        @click:row="showPackage"
       >
         <template v-slot:item.basicInfo="{ item }">
           <div class="package-list__basic-cell-inner">
@@ -18,7 +19,7 @@
             </span>
             <v-img
               :src="item.owner.avatar"
-              :alt="`${item.name} avatar`"
+              :alt="`${item.owner.name} avatar`"
               max-height="30" 
               max-width="30"
               class="mr-2 package-list__avatar"
@@ -105,6 +106,9 @@ export default {
       this.addFacetFilters(`${filter}:${value}`);
 
       this.search();
+    },
+    showPackage(item) {
+      this.$router.push(`/${item.objectID}`);
     },
   },
 };
