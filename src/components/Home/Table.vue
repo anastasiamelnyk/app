@@ -23,10 +23,13 @@
               max-width="30"
               class="mr-2 package-list__avatar"
             />
-            <span class="package-list__author">
+            <span
+              class="my-1 package-list__author"
+              @click="addFacetFilter('owner.name', item.owner.name)"
+            >
               {{ item.owner.name }}
             </span>
-            <span class="mb-1">
+            <span v-if="item.license" class="mb-1">
               License: {{ item.license }}
             </span>
             <div
@@ -40,6 +43,7 @@
                 small
                 color="accent"
                 class="mr-1 mb-1"
+                @click="addFacetFilter('keywords', keyword)"
               >
                 {{ keyword }}
               </v-chip>
@@ -90,10 +94,18 @@ export default {
   methods: {
     ...mapMutations([
       'setPage',
+      'addFacetFilters',
     ]),
     ...mapActions([
       'search',
+      'clearSearchQuery',
     ]),
+    addFacetFilter(filter, value) {
+      this.clearSearchQuery();
+      this.addFacetFilters(`${filter}:${value}`);
+
+      this.search();
+    },
   },
 };
 </script>
@@ -129,7 +141,16 @@ export default {
 
   &__author {
     font-size: 1.1em;
+    line-height: 1;
     font-weight: bold;
+    width: max-content;
+    border-bottom: 1px solid transparent;
+    cursor: pointer;
+    transition: border-color 0.3s;
+
+    &:hover {
+      border-color: rgba(0, 0, 0, 0.87);
+    }
   }
 
   &__keywords {

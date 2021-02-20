@@ -24,14 +24,22 @@ export default {
     ...mapGetters({
       isSearchRunning: 'getSearchRunning',
       searchQuery: 'getSearchQuery',
+      facetFilters: 'getFacetFilters',
     }),
     query: {
       get() {
-        return this.searchQuery;
+        return this.facetFilters.length
+        ? this.getFacetFiltersString(this.facetFilters)
+        : this.searchQuery;
       },
       set(value) {
-        this.setSearchQuery(value);
-        this.setPage(0);
+        if (value.includes(':')) {
+          this.clearSearchQuery();
+          this.setFacetFilters(this.getFacetFiltersArray(value));
+        } else {
+          this.clearSearchFilters();
+          this.setSearchQuery(value);
+        }
       },
     },
   },
@@ -39,10 +47,33 @@ export default {
     ...mapMutations([
       'setSearchQuery',
       'setPage',
+      'setFacetFilters',
     ]),
     ...mapActions([
       'search',
+      'clearSearchQuery',
+      'clearSearchFilters',
     ]),
+    getFacetFiltersString(filters) {
+      return filters.map(cur => {
+          let [filter, value] = cur.split(':');
+
+          if (filter === 'owner.name') filter = 'author';
+
+          return `${filter}: ${value}`;
+        }).join(', ');
+    },
+    getFacetFiltersArray(queryString) {
+      const queryArr = queryString.split(', ');
+
+      return queryArr.map(cur => {
+        let [filter, value] = cur.split(': ');
+
+        if (filter === 'author') filter = 'owner.name';
+
+        return `${filter}:${value}`;
+      });
+    },
   },
 };
 </script>

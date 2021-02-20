@@ -13,6 +13,7 @@ const state = {
   perPage: 0,
   didSearchHappen: false,
   searchQuery: '',
+  facetFilters: [],
 };
 
 const getters = {
@@ -27,6 +28,7 @@ const getters = {
   getPerPage: state => state.perPage,
   getSearchHappen: state => state.didSearchHappen,
   getSearchQuery: state => state.searchQuery,
+  getFacetFilters: state => state.facetFilters,
 };
 
 const mutations = {
@@ -51,6 +53,12 @@ const mutations = {
   setSearchQuery(state, payload) {
     state.searchQuery = payload;
   },
+  setFacetFilters(state, payload) {
+    state.facetFilters = payload;
+  },
+  addFacetFilters(state, payload) {
+    state.facetFilters = [ ...state.facetFilters, payload ];
+  },
 };
 
 const actions = {
@@ -61,6 +69,7 @@ const actions = {
     index.search(state.searchQuery, {
       page: state.page,
       hitsPerPage: RESULTS_PER_PAGE,
+      facetFilters: state.facetFilters,
     }).then(data => {
       commit('setSearchResult', data.hits);
       commit('setPage', data.page);
@@ -70,6 +79,14 @@ const actions = {
     .finally(() => {
       commit('setSearchRunning', false);
     });
+  },
+  clearSearchQuery({ state, commit }) {
+    if (state.searchQuery) commit('setSearchQuery', '');
+    if (state.page) commit('setPage', 0);
+  },
+  clearSearchFilters({state, commit }) {
+    if (state.facetFilters.length) commit('setFacetFilters', []);
+    if (state.page) commit('setPage', 0);
   },
 };
 
