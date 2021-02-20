@@ -44,7 +44,7 @@
 
 <script>
 export default {
-  name: '',
+  name: 'Footer',
   props: {},
   components: {},
   data: () => ({}),
@@ -57,6 +57,7 @@ export default {
 .footer {
   display: flex;
   align-items: center;
+  margin-top: 60px;
 
   &__author {
     font-size: 1.25em;
