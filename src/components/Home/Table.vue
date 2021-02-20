@@ -53,9 +53,7 @@
         :length="totalPages"
         :total-visible="6"
         class="package-list__pagination mt-2"
-        @input="search('form')"
-        @next="search('form')"
-        @previous="search('form')"
+        @input="search"
       />
     </v-col>
   </v-row>

@@ -12,6 +12,7 @@ const state = {
   totalPages: 0,
   perPage: 0,
   didSearchHappen: false,
+  searchQuery: '',
 };
 
 const getters = {
@@ -25,6 +26,7 @@ const getters = {
   getTotalPages: state => state.totalPages,
   getPerPage: state => state.perPage,
   getSearchHappen: state => state.didSearchHappen,
+  getSearchQuery: state => state.searchQuery,
 };
 
 const mutations = {
@@ -46,14 +48,17 @@ const mutations = {
   setSearchHappen(state, payload) {
     state.didSearchHappen = payload;
   },
+  setSearchQuery(state, payload) {
+    state.searchQuery = payload;
+  },
 };
 
 const actions = {
-  search({ state, commit }, payload) {
+  search({ state, commit }) {
     if (!state.didSearchHappen) commit('setSearchHappen', true);
     commit('setSearchRunning', true);
 
-    index.search(payload, {
+    index.search(state.searchQuery, {
       page: state.page,
       hitsPerPage: RESULTS_PER_PAGE,
     }).then(data => {
